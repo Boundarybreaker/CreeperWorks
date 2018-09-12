@@ -1,6 +1,6 @@
 <img src="icon.png" align="right" width="180px"/>
 
-# Aquarius
+# CreeperWorks
 
 
 [>> Downloads <<](https://github.com/b0undarybreaker/CreeperWorks/releases)
