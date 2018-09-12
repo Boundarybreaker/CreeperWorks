@@ -1,0 +1,11 @@
+{
+  "id": "creeperworks",
+  "name": "CreeperWorks",
+  "version": "1.0",
+  "authors": [
+    "b0undarybreaker"
+  ],
+  "listeners": [
+    "space.bbkr.creeperworks.CreeperWorksCore"
+  ]
+}

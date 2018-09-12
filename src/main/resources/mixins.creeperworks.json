@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "minVersion": "0.7.7",
+  "compatibilityLevel": "JAVA_8",
+  "target": "@env(DEFAULT)",
+  "package": "space.bbkr.creeperworks.mixins",
+  "refmap": "mixins.creeperworks.refmap.json",
+  "mixins": [
+    "MixinEntityCreeper"
+  ]
+}

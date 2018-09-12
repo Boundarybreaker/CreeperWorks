@@ -1,0 +1,2 @@
+public method net.minecraft.entity.monster.EntityCreeper func_146077_cc()V # explode
+public method net.minecraft.entity.monster.EntityCreeper func_190741_do()V # spawnLingeringCloud
