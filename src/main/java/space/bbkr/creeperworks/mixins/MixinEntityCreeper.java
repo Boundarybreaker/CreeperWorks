@@ -38,26 +38,14 @@ public abstract class MixinEntityCreeper extends EntityLivingBase {
             cancellable = true)
     public void creeperDamage(CallbackInfo ci) {
         Vec3d pos = new Vec3d(this.posX, this.posY, this.posZ);
-        List<EntityLivingBase> entities = this.world.getEntitiesWithinAABB(EntityLivingBase.class, this.getEntityBoundingBox().grow(5.0D));
+        double range = this.getPowered()? 15 : 5;
+        List<EntityLivingBase> entities = this.world.getEntitiesWithinAABB(EntityLivingBase.class, this.getEntityBoundingBox().grow(range));
 
         for (EntityLivingBase entity : entities) {
             if (this.getDistanceSq(entity) <= 25.0D && entity != this) {
-
-                boolean doDamage = false;
-
-                for (int i = 0; i <= 4; i ++) {
-                    RayTraceResult ray = this.world.rayTraceBlocks(pos, new Vec3d(entity.posX, entity.posY + (i/2f), entity.posZ), RayTraceFluidMode.NEVER, true, false);
-                    if (ray == null || ray.typeOfHit == RayTraceResult.Type.MISS || ray.typeOfHit == RayTraceResult.Type.ENTITY) {
-                        doDamage = true;
-                        break;
-                    }
-                }
-
-                if (doDamage) {
-                    int multiplier = this.getPowered()? 20 : 15;
-                    float damage = multiplier * (float) Math.sqrt((5.0D - (double) this.getDistance(entity)) / 5.0D);
-                    entity.attackEntityFrom(DamageSource.causeExplosionDamage(this), damage);
-                }
+                int multiplier = this.getPowered()? 20 : 15;
+                float damage = multiplier * (float) Math.sqrt((range - (double) this.getDistance(entity)) / range);
+                entity.attackEntityFrom(DamageSource.causeExplosionDamage(this), damage);
             }
         }
         this.setDead();
@@ -70,6 +58,7 @@ public abstract class MixinEntityCreeper extends EntityLivingBase {
         if (this.world.isRemote) {
             NBTTagCompound creeperWork = new NBTTagCompound();
             NBTTagCompound fireworkDesign = new NBTTagCompound();
+            NBTTagCompound bigBall = new NBTTagCompound();
             if (!this.getPowered()) {
                 fireworkDesign.setInteger("Type", 2);
                 fireworkDesign.setIntArray("Colors", new int[]{4312372});
@@ -78,13 +67,16 @@ public abstract class MixinEntityCreeper extends EntityLivingBase {
                 fireworkDesign.setInteger("Type", 3);
                 fireworkDesign.setIntArray("Colors", new int[]{2651799});
                 fireworkDesign.setIntArray("FadeColors", new int[]{15790320});
+                bigBall.setInteger("Type", 1);
+                bigBall.setIntArray("Colors", new int[]{4312372});
+                bigBall.setIntArray("FadeColors", new int[]{1973019});
             }
             NBTTagList explosions = new NBTTagList();
             explosions.add(fireworkDesign);
+            explosions.add(bigBall);
             creeperWork.setTag("Explosions", explosions);
             double explosionHeight = getPowered()? this.posY+2 : this.posY+1;
             this.world.makeFireworks(this.posX, explosionHeight, this.posZ, this.motionX, this.motionY, this.motionZ, creeperWork);
-            if (this.getPowered()) this.world.playSound(this.posX, this.posY, this.posZ, SoundEvents.ENTITY_FIREWORK_ROCKET_LARGE_BLAST, SoundCategory.HOSTILE, 1.0f, 1.0f, true);
         }
     }
 }
